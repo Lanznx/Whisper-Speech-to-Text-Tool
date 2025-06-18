@@ -2,6 +2,9 @@
 
 簡單好用的語音轉文字工具，使用 OpenAI 的 Whisper 模型，搭配 React 前端和 FastAPI 後端。
 
+![螢幕錄影 2025-06-18 17 53 37](https://github.com/user-attachments/assets/44a901d3-e8a7-435e-858e-c9c5cfccea7d)
+
+
 *Built with AI Vibe Coding*
 
 * **Python 3.8+**
