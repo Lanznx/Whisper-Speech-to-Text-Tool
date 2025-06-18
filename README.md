@@ -15,6 +15,27 @@
 
 ### 後端設定
 
+**使用 uv（推薦）:**
+
+```bash
+# 進入後端目錄
+cd backend
+
+# 建立虛擬環境
+uv venv
+
+# 啟用虛擬環境
+source .venv/bin/activate  # Windows 使用: .venv\Scripts\activate
+
+# 安裝依賴
+uv pip install -r requirements.txt
+
+# 啟動後端服務器
+python main.py  # 或使用 uvicorn: uvicorn main:app --reload
+```
+
+**使用標準 Python 工具:**
+
 ```bash
 # 進入後端目錄
 cd backend
@@ -55,5 +76,5 @@ PORT=4001 npm start
 
 * 支援上傳音訊檔案或直接錄音
 * 即時音訊波形視覺化顯示
-* 使用 Whisper "medium" 模型提供準確的語音識別
+* 使用 Whisper "turbo" 模型提供快速準確的語音識別
 * 現代化 UI 設計 (Tailwind CSS + shadcn/ui)

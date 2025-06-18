@@ -18,7 +18,7 @@ async def lifespan(app: FastAPI):
     # Other options: 'tiny', 'small', 'medium', 'large'
     # For non-English tasks, you might prefer 'base.en', 'small.en', etc.
     try:
-        model = whisper.load_model("medium")
+        model = whisper.load_model("turbo")
         print("Whisper model loaded successfully.")
     except Exception as e:
         print(f"Error loading Whisper model: {e}")
@@ -93,3 +93,11 @@ async def root():
 # 2. Activate it: source .venv/bin/activate (or .venv\Scripts\activate on Windows)
 # 3. Install dependencies: uv pip install -r requirements.txt
 # 4. Run Uvicorn: uvicorn main:app --reload
+
+# This block will execute when running this file directly with 'python main.py'
+if __name__ == "__main__":
+    import uvicorn
+    print("Starting Whisper ASR API server...")
+    # Run the server with uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    # The reload=True option is useful during development as it auto-reloads the server when code changes
