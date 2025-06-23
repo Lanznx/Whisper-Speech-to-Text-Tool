@@ -1,5 +1,9 @@
 fastapi
 uvicorn[standard]
 python-multipart
-git+https://github.com/openai/whisper.git#egg=openai-whisper
+torch
+transformers
+datasets
+accelerate
+srt
 ffmpeg-python
