@@ -7,3 +7,5 @@ datasets
 accelerate
 srt
 ffmpeg-python
+mlx
+mlx-whisper
