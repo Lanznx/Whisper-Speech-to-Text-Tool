@@ -4,9 +4,12 @@ import os
 import tempfile
 import time
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 import ffmpeg
+import io
 from transcription_wrapper import TranscriptionWrapper, MLX_AVAILABLE
 
 # Configure logging
@@ -18,6 +21,14 @@ logger = logging.getLogger(__name__)
 
 # Global variable to hold the transcription wrapper
 transcription_wrapper = None
+
+
+class TranscriptRequest(BaseModel):
+    transcript: str
+
+
+class SRTRequest(BaseModel):
+    srt_transcript: str
 
 
 @asynccontextmanager
@@ -199,6 +210,50 @@ async def transcribe_audio(
     finally:
         if tmp_audio_file_path and os.path.exists(tmp_audio_file_path):
             os.remove(tmp_audio_file_path)
+
+
+@app.post("/download-transcript/")
+async def download_transcript(request: TranscriptRequest):
+    """Download transcript as a text file"""
+    try:
+        transcript_text = request.transcript
+        if not transcript_text:
+            raise HTTPException(status_code=400, detail="No transcript provided")
+        
+        return StreamingResponse(
+            io.BytesIO(transcript_text.encode('utf-8')),
+            media_type="text/plain",
+            headers={
+                "Content-Disposition": "attachment; filename=transcript.txt"
+            }
+        )
+    except Exception as e:
+        logger.error(f"Error creating download: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error creating download: {str(e)}"
+        )
+
+
+@app.post("/download-srt/")
+async def download_srt(request: SRTRequest):
+    """Download SRT subtitle file"""
+    try:
+        srt_content = request.srt_transcript
+        if not srt_content:
+            raise HTTPException(status_code=400, detail="No SRT content provided")
+        
+        return StreamingResponse(
+            io.BytesIO(srt_content.encode('utf-8')),
+            media_type="application/x-subrip",
+            headers={
+                "Content-Disposition": "attachment; filename=subtitles.srt"
+            }
+        )
+    except Exception as e:
+        logger.error(f"Error creating SRT download: {e}")
+        raise HTTPException(
+            status_code=500, detail=f"Error creating SRT download: {str(e)}"
+        )
 
 
 @app.get("/")
